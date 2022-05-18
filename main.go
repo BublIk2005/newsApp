@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"math"
 	"net/http"
 	"net/url"
 	"os"
@@ -49,6 +50,21 @@ type Search struct {
 	Results    Results
 }
 
+func (s *Search) IsLastPage() bool {
+	return s.NextPage >= s.TotalPages
+}
+
+func (s *Search) CurrentPage() int {
+	if s.NextPage == 1 {
+		return s.NextPage
+	}
+	return s.NextPage - 1
+}
+
+func (s *Search) PreviousPage() int {
+	return s.CurrentPage() - 1
+}
+
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	tpl.Execute(w, nil)
 }
@@ -62,6 +78,9 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	params := u.Query()
 	searchKey := params.Get("q")
+	if searchKey == "" {
+		searchKey = "Последние новости"
+	}
 	page := params.Get("page")
 	if page == "" {
 		page = "1"
@@ -80,25 +99,31 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	endpoint := fmt.Sprintf("https://newsapi.org/v2/everything?q=%s&pageSize=%d&page=%d&apiKey=%s&sortBy=publishedAt&language=ru", url.QueryEscape(search.SearchKey), pageSize, search.NextPage, apiKey)
 	resp, err := http.Get(endpoint)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	err = json.NewDecoder(resp.Body).Decode(&search.Results)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	search.TotalPages = int(float64(search.Results.TotalResults / pageSize))
+	search.TotalPages = int(math.Ceil(float64(search.Results.TotalResults / pageSize)))
+
+	if ok := !search.IsLastPage(); ok {
+		search.NextPage++
+	}
+
 	err = tpl.Execute(w, search)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -111,7 +136,7 @@ func main() {
 	apiKey = "4fd64d41b9be47118b2ed1c16615c709"
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "5000"
+		port = "3000"
 	}
 	mux := http.NewServeMux()
 
