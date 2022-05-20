@@ -9,9 +9,9 @@ html {
 }
 
 :root {
-  --light-blue: #3700ff;
-  --dark-blue: #190391;
-  --dark-grey: #777;
+  --light-blue: #4c6aa3;
+  --dark-blue: #282366;
+  --dark-grey: rgb(54, 54, 54);
   --light-grey: #dadce0;
 }
 
@@ -30,7 +30,7 @@ a:hover {
 
 a.button {
   border: 2px solid #04025c;
-  color: var(--dark-blue);
+  color: var(--light-gray);
   border-radius: 4px;
   padding: 6px 24px;
   font-size: 14px;
@@ -39,8 +39,8 @@ a.button {
 
 a.button:hover {
   text-decoration: none;
-  background-color: var(--dark-blue);
-  color: var(--light-blue);
+  background-color: var(--light-gray);
+  color: var(--light-gray);
 }
 
 header {
@@ -70,8 +70,8 @@ form {
   height: 100%;
   border-radius: 4px;
   border-color: transparent;
-  background-color: var(--dark-blue);
-  color: var(--light-blue);
+  background-color: var(--light-grey);
+  color: var(--dark-grey);
   font-size: 16px;
   line-height: 1.4;
   padding-left: 5px;

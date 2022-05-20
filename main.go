@@ -86,7 +86,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		page = "1"
 	}
 
-	search := Search{}
+	search := &Search{}
 	search.SearchKey = searchKey
 	next, err := strconv.Atoi(page)
 	if err != nil {
