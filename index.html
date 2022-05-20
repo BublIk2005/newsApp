@@ -50,13 +50,13 @@
           <a
             href="/search?q={{ .SearchKey }}&page={{ .PreviousPage }}"
             class="button previous-page"
-            >Previous</a>
+            >Назад</a>
           {{ end }}
           {{ if (ne .IsLastPage true) }}
           <a
             href="/search?q={{ .SearchKey }}&page={{ .NextPage }}"
             class="button next-page"
-            >Next</a>
+            >Дальше</a>
           {{ end }}
         {{ end }}
         </div>
