@@ -128,11 +128,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// apiKey = flag.String("apiKey", "", "Newsapi.org access key")
-	// flag.Parse()
-	// if *apiKey == "" {
-	// 	log.Fatal("apiKey must be set")
-	// }
+
 	apiKey = "4fd64d41b9be47118b2ed1c16615c709"
 	port := os.Getenv("PORT")
 	if port == "" {
